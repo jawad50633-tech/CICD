@@ -1,24 +1,32 @@
 <?php
-require 'config.php';
+session_start();
+header('Content-Type: application/json');
 
-$data = json_decode(file_get_contents('php://input'), true);
-$id_token = $data['token'] ?? '';
+$input = json_decode(file_get_contents("php://input"), true);
 
-if(!$id_token) {
-    echo json_encode(['success' => false]);
+if (!isset($input['credential'])) {
+    echo json_encode(["status" => "error"]);
     exit;
 }
-$url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . $id_token;
-$response = file_get_contents($url);
-$user_info = json_decode($response, true);
 
-if(isset($user_info['email'])) {
-    echo json_encode(['success' => false]);
+$token = $input['credential'];
+
+$verify = file_get_contents(
+    "https://oauth2.googleapis.com/tokeninfo?id_token=" . $token
+);
+
+$user = json_decode($verify, true);
+
+if (!isset($user['email'])) {
+    echo json_encode(["status" => "invalid"]);
     exit;
-} 
-$_SESSION['user']=[
-    'name'=>$user_info['name'],
-    'email'=>$user_info['email'],
-    'picture'=>$user_info['picture']
+}
+
+// SESSION CREATE
+$_SESSION['user'] = [
+    'name' => $user['name'],
+    'email' => $user['email'],
+    'picture' => $user['picture']
 ];
-echo json_encode(['success' => true]);
+
+echo json_encode(["status" => "success"]);
