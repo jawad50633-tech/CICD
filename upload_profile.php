@@ -1,28 +1,20 @@
 <?php
-session_start();
-include "db.php";
+include 'config.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
+if (!isset($_SESSION['user'])) {
+    header("Location: signin.php");
 }
 
-if (isset($_FILES['profile_pic'])) {
-    $img_name = $_FILES['profile_pic']['name'];
-    $tmp_name = $_FILES['profile_pic']['tmp_name'];
+$user_id = $_SESSION['user']['id'];
+$file = $_FILES['profile']['name'];
+$tmp = $_FILES['profile']['tmp_name'];
 
-    $ext = strtolower(pathinfo($img_name, PATHINFO_EXTENSION));
-    $allowed = ['jpg','jpeg','png'];
+$newName = time() . "_" . $file;
+move_uploaded_file($tmp, "assets/profile/" . $newName);
 
-    if (in_array($ext, $allowed)) {
-        $new_name = time() . "_" . $_SESSION['user_id'] . "." . $ext;
-        move_uploaded_file($tmp_name, "uploads/" . $new_name);
+$conn->query("UPDATE users SET profile_pic='$newName' WHERE id=$user_id");
 
-        mysqli_query($conn,
-            "UPDATE users SET profile_pic='$new_name' WHERE id=".$_SESSION['user_id']
-        );
-    }
-}
+$_SESSION['user']['profile_pic'] = $newName;
 
 header("Location: dashboard.php");
-exit();
+?>

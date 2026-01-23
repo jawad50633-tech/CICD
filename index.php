@@ -1,24 +1,22 @@
 <?php
-include "db.php";
+include 'config.php';
 
-if (isset($_POST['signup'])) {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $email    = mysqli_real_escape_string($conn, $_POST['email']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $check = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
-    if (mysqli_num_rows($check) > 0) {
-        $error = "Email already exists!";
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $name, $email, $password);
+
+    if ($stmt->execute()) {
+        header("Location: signin.php");
     } else {
-        mysqli_query($conn,
-            "INSERT INTO users (username, email, password)
-             VALUES ('$username','$email','$password')"
-        );
-        header("Location: login.php");
-        exit();
+        echo "Email already exists!";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,40 +25,18 @@ if (isset($_POST['signup'])) {
 </head>
 <body class="bg-light">
 
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="text-center mb-4">Create Account</h3>
-
-                    <?php if(isset($error)): ?>
-                        <div class="alert alert-danger"><?= $error ?></div>
-                    <?php endif; ?>
-
-                    <form method="POST">
-                        <div class="mb-3">
-                            <input type="text" name="username" class="form-control" placeholder="Username" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <input type="email" name="email" class="form-control" placeholder="Email" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <input type="password" name="password" class="form-control" placeholder="Password" required>
-                        </div>
-
-                        <button class="btn btn-primary w-100" name="signup">Sign Up</button>
-                    </form>
-
-                    <p class="text-center mt-3">
-                        Already have an account?
-                        <a href="login.php">Login</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+<div class="container mt-5">
+    <div class="col-md-4 mx-auto card p-4">
+        <h3 class="text-center">Sign Up</h3>
+        <form method="POST">
+            <input class="form-control mb-2" name="name" placeholder="Full Name" required>
+            <input class="form-control mb-2" name="email" type="email" placeholder="Email" required>
+            <input class="form-control mb-2" name="password" type="password" placeholder="Password" required>
+            <button class="btn btn-primary w-100">Register</button>
+        </form>
+        <p class="text-center mt-2">
+            Already have an account? <a href="signin.php">Sign in</a>
+        </p>
     </div>
 </div>
 
