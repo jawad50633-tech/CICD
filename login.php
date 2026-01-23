@@ -52,7 +52,7 @@ if (isset($_POST['login'])) {
 
                     <p class="text-center mt-3">
                         Don’t have an account?
-                        <a href="signup.php">Sign up</a>
+                        <a href="index.php">Sign up</a>
                     </p>
                 </div>
             </div>
