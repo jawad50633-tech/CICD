@@ -46,6 +46,5 @@ $user = mysqli_fetch_assoc($result);
         </div>
     </div>
 </div>
-
 </body>
 </html>
