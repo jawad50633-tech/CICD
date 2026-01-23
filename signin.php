@@ -40,6 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input class="form-control mb-2" name="password" type="password" placeholder="Password" required>
             <button class="btn btn-success w-100">Login</button>
         </form>
+        <p class="text-center mt-2">
+            Don't have an account? <a href="index.php">Sign up</a>
+        </p>
     </div>
 </div>
 
