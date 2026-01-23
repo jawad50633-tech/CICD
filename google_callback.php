@@ -11,7 +11,7 @@ $token_url = "https://oauth2.googleapis.com/token";
 $postData = [
     'code'          => $_GET['code'],
     'client_id'     => GOOGLE_CLIENT_ID,
-    'client_secret' => GOOGLE_CLIENT_SECRET,
+    'client_secret' => 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,
     'redirect_uri'  => GOOGLE_REDIRECT_URI,
     'grant_type'    => 'authorization_code'
 ];
